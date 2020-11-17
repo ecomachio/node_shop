@@ -1,18 +1,36 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/product.css">
+<link rel="stylesheet" href="/css/material_forms.css">
 </head>
 
 <body>
     <%- include('../includes/navigation.ejs') %>
 
-    <main>
+    <main class="container">
         <form class="product-form" action="/admin/add-product" method="POST">
-            <div class="form-control">
-                <label for="title">Title</label>
-                <input type="text" name="title" id="title">
+            <h1>Shipshop add product</h1>
+            <div class="form-group">
+                <input type="text" required="required" name="title" id="title">
+                <label for="input" class="control-label" for="title">Title</label><i class="bar"></i>
+            </div>
+            <div class="form-group">
+                <input type="text" required="required" name="imageUrl" id="imageUrl">
+                <label class="control-label" for="imageUrl">imageUrl</label><i class="bar"></i>
+
+            </div>
+            <div class="form-group">
+                <input type="number" required="required" name="price" id="price">
+                <label class="control-label" for="price">price</label><i class="bar"></i>
+
+            </div>
+            <div class="form-group">
+                <textarea required="required"></textarea>
+                <label for="textarea" class="control-label" name="description" id="description">description</label><i
+                    class="bar"></i>
             </div>
 
-            <button type="submit">Add Product ejs</button>
+            <div class="button-container">
+                <button type="submit" class="button"><span>Done</span></button>
+            </div>
         </form>
     </main>
     <%- include('../includes/end.ejs') %>
