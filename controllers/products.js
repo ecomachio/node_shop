@@ -1,4 +1,5 @@
-const Product = require('../models/product')
+const Product = require('../models/product');
+const Cart = require('../models/cart');
 
 const getShop = (req, res, next) => {
 
@@ -30,7 +31,7 @@ const getProduct = async (req, res, next) => {
 
     res.render('shop/product-detail', {
         pageTitle: product.title,
-        path: '/shop/product',
+        path: '/products',
         product
     });
 }
@@ -87,6 +88,17 @@ const getCart = async (req, res, next) => {
     });
 };
 
+const postAddToCart = async (req, res, next) => {
+
+    const prodId = req.body.productId;
+
+    let prod = await Product.findById(prodId);
+
+    Cart.addProduct(prod);
+
+    res.redirect('/shop/cart');
+}
+
 exports.postAddProduct = postAddProduct;
 exports.getAddProduct = getAddProduct;
 exports.getAllProducts = getAllProducts;
@@ -96,3 +108,4 @@ exports.getCheckout = getCheckout;
 exports.getAdminProducts = getAdminProducts;
 exports.getOrders = getOrders;
 exports.getProduct = getProduct;
+exports.postAddToCart = postAddToCart;

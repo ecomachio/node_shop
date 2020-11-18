@@ -25,7 +25,7 @@
             <!-- Product Pricing -->
             <div class="product-price">
                 <span>$ <%= product.price %></span>
-                <a href="#" class="cart-btn">Add to cart</a>
+                <%- include('../includes/add-cart.ejs', {prod:product}) %>
             </div>
         </div>
     </main>
