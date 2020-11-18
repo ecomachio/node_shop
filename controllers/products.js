@@ -9,7 +9,6 @@ const getShop = (req, res, next) => {
 };
 
 const getCheckout = (req, res, next) => {
-
     res.render('shop/checkout', {
         pageTitle: 'Shop do Edian',
         path: '/checkout'
@@ -17,12 +16,24 @@ const getCheckout = (req, res, next) => {
 };
 
 const getOrders = (req, res, next) => {
-
     res.render('shop/orders', {
         pageTitle: 'Shop do Edian',
         path: '/orders'
     });
 };
+
+const getProduct = async (req, res, next) => {
+
+    const prodId = req.params.productId;
+
+    const product = await Product.findById(prodId);
+
+    res.render('shop/product-detail', {
+        pageTitle: product.title,
+        path: '/shop/product',
+        product
+    });
+}
 
 const getAllProducts = async (req, res, next) => {
 
@@ -61,15 +72,15 @@ const postAddProduct = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
     const description = req.body.description;
+    const category = req.body.category
 
-    let prod = new Product(title, imageUrl, price, description);
+    let prod = new Product(title, imageUrl, price, description, category);
     prod.save();
 
     res.redirect('/shop')
 }
 
 const getCart = async (req, res, next) => {
-
     res.render('shop/cart', {
         pageTitle: 'Shop do Edian',
         path: '/shop/cart'
@@ -84,3 +95,4 @@ exports.getCart = getCart;
 exports.getCheckout = getCheckout;
 exports.getAdminProducts = getAdminProducts;
 exports.getOrders = getOrders;
+exports.getProduct = getProduct;

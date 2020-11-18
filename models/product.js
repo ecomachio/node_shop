@@ -4,6 +4,7 @@ const path = require('path')
 const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
 
 const getProductsFromFile = () => {
+    const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
     return new Promise((res, rej) => {
         fs.readFile(p, "utf8", (err, data) => {
             if (err) {
@@ -20,14 +21,16 @@ const getProductsFromFile = () => {
 }
 
 class Product {
-    constructor(title, imageUrl, price, description) {
+    constructor(title, imageUrl, price, description, category) {
         this.title = title;
         this.imageUrl = imageUrl;
         this.price = price;
         this.description = description;
+        this.category = category;
     }
 
     save() {
+        this.id = Math.random().toString();
         getProductsFromFile().then((products) => {
             products.push(this);
             fs.writeFile(p, JSON.stringify(products), (err) => {
@@ -37,10 +40,11 @@ class Product {
     }
 
     static async fetchAll() {
-        let products = []
-        const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
-
         return await getProductsFromFile();
+    }
+
+    static async findById(id){
+        return (await getProductsFromFile()).find(p => p.id === id);
     }
 }
 
