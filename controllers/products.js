@@ -16,6 +16,14 @@ const getCheckout = (req, res, next) => {
     });
 };
 
+const getOrders = (req, res, next) => {
+
+    res.render('shop/orders', {
+        pageTitle: 'Shop do Edian',
+        path: '/orders'
+    });
+};
+
 const getAllProducts = async (req, res, next) => {
 
     const products = await Product.fetchAll();
@@ -27,6 +35,19 @@ const getAllProducts = async (req, res, next) => {
         path: '/products'
     });
 };
+
+const getAdminProducts = async (req, res, next) => {
+
+    const products = await Product.fetchAll();
+
+    res.render('admin/products', {
+        pageTitle: 'Shop do Edian - Admin',
+        products,
+        shopTitle: 'Shop Edian',
+        path: '/admin/products'
+    });
+};
+
 
 const getAddProduct = (req, res, next) => {
     res.render('admin/add-product', {
@@ -61,3 +82,5 @@ exports.getAllProducts = getAllProducts;
 exports.getShop = getShop;
 exports.getCart = getCart;
 exports.getCheckout = getCheckout;
+exports.getAdminProducts = getAdminProducts;
+exports.getOrders = getOrders;

@@ -10,6 +10,7 @@ Router.get('/', productsController.getShop)
 Router.get('/products', productsController.getAllProducts)
 Router.get('/cart', productsController.getCart)
 Router.get('/checkout', productsController.getCheckout)
+Router.get('/orders', productsController.getOrders)
 
 Router.use((req, res, next) => {
     console.log("im in the third middleware");
