@@ -1,12 +1,13 @@
-<head>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
-    <script src="/js/404.js"></script>
-    <link rel="stylesheet" href="/css/404.css">
-    <title><%= pageTitle %> </title>
+<%- include('./includes/head.ejs') %>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+<script src="/js/404.js"></script>
+<link rel="stylesheet" href="/css/404.css">
+<title><%= pageTitle %> </title>
 </head>
 
 <body>
+    <%- include('./includes/navigation.ejs', {path:''} ) %>
     <div class="not-found parallax">
         <div class="sky-bg"></div>
         <div class="wave-7"></div>

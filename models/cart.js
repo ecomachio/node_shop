@@ -36,7 +36,6 @@ class Cart {
             console.error(err);
         })
 
-        //add / plus quantity
     }
 }
 
