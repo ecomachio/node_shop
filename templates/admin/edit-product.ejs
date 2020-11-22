@@ -6,35 +6,50 @@
     <%- include('../includes/navigation.ejs') %>
 
     <main class="container">
-        <form class="product-form" action="/admin/add-product" method="POST">
-            <h1>Shipshop add product</h1>
+        <form class="product-form" action="/admin/<% if (!editing) {%>add<% } else { %>edit<% } %>-product"
+            method="POST">
+            <h1>Shipshop
+                <% if (!editing) {%>
+                add
+                <% } else { %>
+                edit
+                <% } %>
+                product</h1>
             <div class="form-group">
-                <input type="text" required="required" name="title" id="title">
+                <input type="text" required="required" name="title" id="title"
+                    value="<% if (editing) {%><%=product.title%><% } %>">
                 <label for="input" class="control-label" for="title">Title</label><i class="bar"></i>
             </div>
             <div class="form-group">
-                <input type="text" required="required" name="imageUrl" id="imageUrl">
+                <input type="text" required="required" name="imageUrl" id="imageUrl"
+                    value="<% if (editing) {%><%=product.imageUrl%><% } %>">
                 <label class="control-label" for="imageUrl">imageUrl</label><i class="bar"></i>
 
             </div>
             <div class="form-group">
-                <input type="number" required="required" name="price" id="price" step="0.01">
+                <input type="number" required="required" name="price" id="price" step="0.01"
+                    value="<% if (editing) {%><%=product.price%><% } %>">
                 <label class="control-label" for="price">price</label><i class="bar"></i>
 
             </div>
             <div class="form-group">
-                <input type="text" required="required" name="category" id="category">
+                <input type="text" required="required" name="category" id="category"
+                    value="<% if (editing) {%><%=product.category%><% } %>">
                 <label class="control-label" for="category">category</label><i class="bar"></i>
 
             </div>
             <div class="form-group">
-                <textarea required="required" name="description" id="description"></textarea>
+                <textarea required="required" name="description"
+                    id="description"><% if (editing) {%><%=product.title%><% } %></textarea>
                 <label for="textarea" class="control-label">description</label><i class="bar"></i>
             </div>
 
             <div class="button-container">
                 <button type="submit" class="button"><span>Done</span></button>
             </div>
+            <% if (editing) { %>
+            <input type="hidden" name="id" value="<%= product.id %>">
+            <% } %>
         </form>
     </main>
     <%- include('../includes/end.ejs') %>

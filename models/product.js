@@ -2,11 +2,13 @@ const fs = require('fs')
 const path = require('path')
 
 const fileUtil = require('../utils/file');
+const Cart = require('./cart')
 
 const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
 
 class Product {
-    constructor(title, imageUrl, price, description, category) {
+    constructor(id, title, imageUrl, price, description, category) {
+        this.id = id;
         this.title = title;
         this.imageUrl = imageUrl;
         this.price = price;
@@ -15,13 +17,41 @@ class Product {
     }
 
     save() {
-        this.id = Math.random().toString();
+
         fileUtil.getFromFile('products').then((products) => {
-            products.push(this);
+            if (this.id) {
+                let productIndex = products.findIndex(p => p.id === this.id)
+                products[productIndex] = this;
+            } else {
+                this.id = Math.random().toString();
+                products.push(this);
+            }
             fs.writeFile(p, JSON.stringify(products), (err) => {
                 console.error(err);
             })
         })
+    }
+
+    async delete() {
+        let products = await fileUtil.getFromFile('products');
+        if (products) {
+            const updatedProducts = products.filter(p => p.id !== this.id)
+
+            try {
+                //delete product from Cart
+                await Cart.deleteProduct(this)
+
+                //delete product from file
+                fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
+                    console.error(err);
+                    return;
+                })
+
+            } catch (error) {
+                console.error(error);
+                return;
+            }
+        }
     }
 
     static async fetchAll() {
@@ -35,7 +65,8 @@ class Product {
         let products = await fileUtil.getFromFile('products');
 
         if (products) {
-            return products.find(p => p.id === id);
+            const p = products.find(p => p.id === id);
+            return new Product(p.id, p.title, p.imageUrl, p.price, p.description, p.category);
         }
 
         return {}

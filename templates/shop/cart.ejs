@@ -1,12 +1,67 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/product.css">
+<link rel="stylesheet" href="/css/cart.css">
 </head>
 
 <body>
     <%- include('../includes/navigation.ejs') %>
-    <main>
-        <h1>My Shipshop Cart</h1>
-        <p>Shipshop Cart...</p>
+    <div class="wrap cf">
+        <h1 class="projTitle"><span>shipshop</span> Shopping Cart</h1>
+        <div class="heading cf">
+            <h1>My Cart</h1>
+            <a href="#" class="continue">Continue Shopping</a>
+        </div>
+        <div class="cart">
 
-    </main>
+            <% if (products.length > 0 ) { %>
+            <ul class="cartWrap">
+                <% products.forEach((cp) => { %>
+                <li class="items odd">
+
+                    <div class="infoWrap">
+                        <div class="cartSection">
+                            <img src="<%=cp.productData.imageUrl %>" alt="" class="itemImg" />
+                            <p class="itemNumber"><%= cp.productData.id %></p>
+                            <h3><%= cp.productData.title %></h3>
+
+                            <p> <input type="text" class="qty" placeholder="<%= cp.qty %>" /> x $
+                                <%= cp.productData.price %></p>
+
+                            <p class="stockStatus">In Stock</p>
+                        </div>
+
+
+                        <div class="prodTotal cartSection">
+                            <p>$ <%= cp.productData.price * cp.qty %></p>
+                        </div>
+                        <div class="cartSection removeWrap">
+                            <form action="/shop/cart-delete-item/<%= cp.productData.id %>" method="post">
+                                <input type="submit" class="remove" value="x">
+                            </form>
+
+                        </div>
+                    </div>
+                </li>
+                <% }) %>
+            </ul>
+            <% } %>
+        </div>
+
+        <div class="promoCode"><label for="promo">Have A Promo Code?</label><input type="text" name="promo"
+                placholder="Enter Code" />
+            <a href="#" class="btn"></a></div>
+
+        <div class="subtotal cf">
+            <ul>
+                <li class="totalRow"><span class="label">Subtotal</span><span class="value">$ <%= totalPrice %></span>
+                </li>
+
+                <li class="totalRow"><span class="label">Shipping</span><span class="value">$0.00</span></li>
+
+                <li class="totalRow"><span class="label">Tax</span><span class="value">$0.00</span></li>
+                <li class="totalRow final"><span class="label">Total</span><span class="value">$
+                        <%= totalPrice %></span></li>
+                <li class="totalRow"><a href="#" class="btn continue">Checkout</a></li>
+            </ul>
+        </div>
+    </div>
     <%- include('../includes/end.ejs') %>

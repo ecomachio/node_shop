@@ -37,6 +37,31 @@ class Cart {
         })
 
     }
+
+    static async deleteProduct(product) {
+        const cart = await fileUtil.getFromFile('cart');
+
+        const productFromCart = cart.products.find(p => p.id === product.id);
+
+        if (!productFromCart) {
+            return;
+        }
+
+        //subtract que qty before deleting
+        cart.totalPrice = cart.totalPrice - (product.price * productFromCart.qty);
+
+        //delete product from cart
+        cart.products = cart.products.filter(p => p.id !== product.id);
+
+        fs.writeFile(p, JSON.stringify(cart), (err) => {
+            console.error(err);
+        })
+    }
+
+    static async getCart() {
+        const cart = await fileUtil.getFromFile('cart');
+        return cart;
+    }
 }
 
 module.exports = Cart;
