@@ -64,7 +64,8 @@ const getAdminProducts = async (req, res, next) => {
 const getAddProduct = (req, res, next) => {
     res.render('admin/edit-product', {
         pageTitle: 'Add Product',
-        path: '/admin/edit-product'
+        path: '/admin/add-product',
+        editing: false
     });
 };
 
@@ -75,37 +76,66 @@ const postAddProduct = (req, res, next) => {
     const description = req.body.description;
     const category = req.body.category
 
-    let prod = new Product(title, imageUrl, price, description, category);
+    let prod = new Product(null, title, imageUrl, price, description, category);
     prod.save();
 
     res.redirect('/shop')
 }
 
-const getCart = async (req, res, next) => {
-    res.render('shop/cart', {
-        pageTitle: 'Shop do Edian',
-        path: '/shop/cart'
+const getEditProduct = async (req, res, next) => {
+    const editMode = req.query.edit;
+
+    if (!editMode) {
+        return res.redirect('/shop')
+    }
+
+    const prodId = req.params.id;
+    let product = await Product.findById(prodId);
+
+    if (!product) {
+        return res.redirect('/shop')
+    }
+
+    res.render('admin/edit-product', {
+        pageTitle: 'Edit Product',
+        path: '/admin/edit-product',
+        editing: true,
+        product: product
     });
 };
 
-const postAddToCart = async (req, res, next) => {
+const postEditProduct = (req, res, next) => {
+    const id = req.body.id
+    const title = req.body.title;
+    const imageUrl = req.body.imageUrl;
+    const price = req.body.price;
+    const description = req.body.description;
+    const category = req.body.category
 
-    const prodId = req.body.productId;
+    let prod = new Product(id, title, imageUrl, price, description, category);
+    prod.save();
+    res.redirect('/shop')
+};
 
-    let prod = await Product.findById(prodId);
+const deleteProduct = async(req, res, next) => {
+    const id = req.params.id
+    let prod = await Product.findById(id);
+    prod.delete();
+    res.redirect('/shop')
+};
 
-    Cart.addProduct(prod);
 
-    res.redirect('/shop/cart');
-}
 
 exports.postAddProduct = postAddProduct;
 exports.getAddProduct = getAddProduct;
 exports.getAllProducts = getAllProducts;
 exports.getShop = getShop;
-exports.getCart = getCart;
+
 exports.getCheckout = getCheckout;
 exports.getAdminProducts = getAdminProducts;
 exports.getOrders = getOrders;
 exports.getProduct = getProduct;
-exports.postAddToCart = postAddToCart;
+
+exports.getEditProduct = getEditProduct;
+exports.postEditProduct = postEditProduct;
+exports.deleteProduct = deleteProduct;
