@@ -27,18 +27,20 @@ const getProduct = async (req, res, next) => {
 
     const prodId = req.params.productId;
 
-    const product = await Product.findById(prodId);
+    const [product] = await Product.findById(prodId);
+
+    console.log(product);
 
     res.render('shop/product-detail', {
         pageTitle: product.title,
         path: '/products',
-        product
+        product: product,
     });
 }
 
 const getAllProducts = async (req, res, next) => {
 
-    const products = await Product.fetchAll();
+    const [products] = await Product.fetchAll();
 
     res.render('shop/product-list', {
         pageTitle: 'Shop do Edian',
@@ -69,7 +71,7 @@ const getAddProduct = (req, res, next) => {
     });
 };
 
-const postAddProduct = (req, res, next) => {
+const postAddProduct = async (req, res, next) => {
     const title = req.body.title;
     const imageUrl = req.body.imageUrl;
     const price = req.body.price;
@@ -77,8 +79,12 @@ const postAddProduct = (req, res, next) => {
     const category = req.body.category
 
     let prod = new Product(null, title, imageUrl, price, description, category);
-    prod.save();
-
+    try {
+        const { insertId } = await prod.save();
+        console.log(insertId);
+    } catch (error) {
+        console.error(error);
+    }
     res.redirect('/shop')
 }
 
@@ -117,7 +123,7 @@ const postEditProduct = (req, res, next) => {
     res.redirect('/shop')
 };
 
-const deleteProduct = async(req, res, next) => {
+const deleteProduct = async (req, res, next) => {
     const id = req.params.id
     let prod = await Product.findById(id);
     prod.delete();

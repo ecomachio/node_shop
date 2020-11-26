@@ -1,10 +1,6 @@
-const fs = require('fs')
-const path = require('path')
+const db = require('../utils/database');
 
-const fileUtil = require('../utils/file');
 const Cart = require('./cart')
-
-const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
 
 class Product {
     constructor(id, title, imageUrl, price, description, category) {
@@ -17,60 +13,22 @@ class Product {
     }
 
     save() {
-
-        fileUtil.getFromFile('products').then((products) => {
-            if (this.id) {
-                let productIndex = products.findIndex(p => p.id === this.id)
-                products[productIndex] = this;
-            } else {
-                this.id = Math.random().toString();
-                products.push(this);
-            }
-            fs.writeFile(p, JSON.stringify(products), (err) => {
-                console.error(err);
-            })
-        })
+        return db.execute(
+            'INSERT INTO products (title, price, description, imageUrl, category) VALUES (?, ?, ?, ?, ?)',
+            [this.title, this.price, this.description, this.imageUrl, this.category]
+        )
     }
 
     async delete() {
-        let products = await fileUtil.getFromFile('products');
-        if (products) {
-            const updatedProducts = products.filter(p => p.id !== this.id)
 
-            try {
-                //delete product from Cart
-                await Cart.deleteProduct(this)
-
-                //delete product from file
-                fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
-                    console.error(err);
-                    return;
-                })
-
-            } catch (error) {
-                console.error(error);
-                return;
-            }
-        }
     }
 
     static async fetchAll() {
-        let products = await fileUtil.getFromFile('products');
-        if (products)
-            return products
-        else return []
+        return db.execute('select * from products');
     }
 
     static async findById(id) {
-        let products = await fileUtil.getFromFile('products');
-
-        if (products) {
-            const p = products.find(p => p.id === id);
-            return new Product(p.id, p.title, p.imageUrl, p.price, p.description, p.category);
-        }
-
-        return {}
-
+        return db.execute(`select * from products where id = ?`, [id]);
     }
 }
 
