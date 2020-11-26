@@ -9,7 +9,7 @@ const adminRoutes = require('./routes/admin')
 const shopRoutes = require('./routes/shop')
 const exceptionsController = require('./controllers/exceptions');
 
-const db = require('./utils/database');
+const sequelize = require('./utils/database');
 
 const app = express();
 
@@ -25,4 +25,6 @@ app.use('/shop', shopRoutes)
 
 app.use(exceptionsController.pageNotFound)
 
-app.listen(3000)
+sequelize.sync()
+    .then(() => app.listen(3000))
+    .catch(err => console.error(err));

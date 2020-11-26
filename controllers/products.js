@@ -27,9 +27,7 @@ const getProduct = async (req, res, next) => {
 
     const prodId = req.params.productId;
 
-    const [product] = await Product.findById(prodId);
-
-    console.log(product);
+    const product = await Product.find(prodId);
 
     res.render('shop/product-detail', {
         pageTitle: product.title,
@@ -40,19 +38,26 @@ const getProduct = async (req, res, next) => {
 
 const getAllProducts = async (req, res, next) => {
 
-    const [products] = await Product.fetchAll();
+    const {
+        rows: products,
+        count: productsCount
+    } = await Product.findAndCountAll();;
 
     res.render('shop/product-list', {
         pageTitle: 'Shop do Edian',
         products,
         shopTitle: 'Shop Edian',
-        path: '/products'
+        path: '/products',
+        productsCount
     });
 };
 
 const getAdminProducts = async (req, res, next) => {
 
-    const products = await Product.fetchAll();
+    const {
+        rows: products,
+        count: productsCount
+    } = await Product.findAndCountAll();
 
     res.render('admin/products', {
         pageTitle: 'Shop do Edian - Admin',
@@ -72,16 +77,10 @@ const getAddProduct = (req, res, next) => {
 };
 
 const postAddProduct = async (req, res, next) => {
-    const title = req.body.title;
-    const imageUrl = req.body.imageUrl;
-    const price = req.body.price;
-    const description = req.body.description;
-    const category = req.body.category
+    const { title, imageUrl, price, description, category } = req.body;
 
-    let prod = new Product(null, title, imageUrl, price, description, category);
     try {
-        const { insertId } = await prod.save();
-        console.log(insertId);
+        await Product.create({ title, imageUrl, price, description, category });
     } catch (error) {
         console.error(error);
     }
@@ -96,7 +95,7 @@ const getEditProduct = async (req, res, next) => {
     }
 
     const prodId = req.params.id;
-    let product = await Product.findById(prodId);
+    let product = await Product.findByPk(prodId);
 
     if (!product) {
         return res.redirect('/shop')
@@ -110,23 +109,24 @@ const getEditProduct = async (req, res, next) => {
     });
 };
 
-const postEditProduct = (req, res, next) => {
-    const id = req.body.id
-    const title = req.body.title;
-    const imageUrl = req.body.imageUrl;
-    const price = req.body.price;
-    const description = req.body.description;
-    const category = req.body.category
+const postEditProduct = async (req, res, next) => {
+    const { id, title, imageUrl, price, description, category } = req.body;
 
-    let prod = new Product(id, title, imageUrl, price, description, category);
-    prod.save();
+    let product = await Product.findByPk(id);
+    product.title = title;
+    product.price = price;
+    product.description = description;
+    product.imageUrl = imageUrl;
+    product.category = category
+    product.id = id;
+
+    await product.save();
     res.redirect('/shop')
 };
 
 const deleteProduct = async (req, res, next) => {
     const id = req.params.id
-    let prod = await Product.findById(id);
-    prod.delete();
+    await Product.destroy({ where: { id: id } });
     res.redirect('/shop')
 };
 
