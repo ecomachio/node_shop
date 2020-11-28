@@ -1,53 +1,99 @@
 const Product = require('../models/product');
 const Cart = require('../models/cart');
+const CartItem = require('../models/cart-item');
 
 const getCart = async (req, res, next) => {
 
-    let cartProducts = {};
+    try {
+        const cart = await req.user.getCart();
+        const cartItems = await cart.getProducts();
 
-    let cart = await Cart.getCart();
-    if (!cart) {
-        cartProducts = { productData: null, qty: 0 }
-    } else {
-        cartProducts = await Promise.all(cart.products.map(async cp => {
-            const prod = await Product.findById(cp.id);
-            return {
-                productData: prod,
-                qty: cp.qty,
-
-            }
-        }))
+        res.render('shop/cart', {
+            pageTitle: 'Shop do Edian',
+            path: '/shop/cart',
+            products: cartItems,
+            totalPrice: cart.totalPrice,
+        });
+    } catch (error) {
+        console.error(error);
     }
-    console.log(cartProducts);
-
-    res.render('shop/cart', {
-        pageTitle: 'Shop do Edian',
-        path: '/shop/cart',
-        products: cartProducts,
-        totalPrice: cart.totalPrice,
-    });
 };
 
 const postAddToCart = async (req, res, next) => {
 
-    const prodId = req.body.productId;
+    try {
+        const prodId = req.body.productId;
+        const cart = await req.user.getCart();
 
-    let prod = await Product.findById(prodId);
-
-    Cart.addProduct(prod);
-
-    res.redirect('/shop/cart');
+        if (await addItemToCart(prodId, cart)) {
+            const cartItems = await cart.getProducts();
+            cart.totalPrice = cartItems.reduce((totalPrice, cv) => {
+                return totalPrice + cv.price * cv['cart-item'].quantity;
+            }, 0)
+            res.render('shop/cart', {
+                pageTitle: 'Shop do Edian',
+                path: '/shop/cart',
+                products: cartItems,
+                totalPrice: cart.totalPrice,
+            });
+        } else {
+            throw "kk k num deu";
+        }
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 const postCartDeleteProduct = async (req, res, next) => {
 
     const prodId = req.params.id;
-    console.log("asd", prodId);
-    let prod = await Product.findById(prodId);
 
-    await Cart.deleteProduct(prod);
+    try {
+        const cart = await req.user.getCart();
+
+        const cartProducts = await cart.getProducts({ where: { id: prodId } });
+
+        await cartProducts[0]['cart-item'].destroy();
+
+    } catch (error) {
+        console.error(error);
+    }
 
     res.redirect('/shop/cart');
+}
+
+const addItemToCart = async (prodId, cart) => {
+
+    const cartItems = await cart.getProducts({ where: { id: prodId } });
+    const itemInCart = cartItems[0];
+    let newCartItem;
+    try {
+        if (itemInCart) {
+
+            await cart.addProduct(
+                itemInCart,
+                {
+                    through:
+                        { quantity: itemInCart['cart-item'].quantity + 1 }
+                }
+            );
+
+        } else {
+            const product = await Product.findByPk(prodId);
+            newCartItem = { product, cartItem: { quantity: 1 } };
+            await cart.addProduct(
+                newCartItem.product,
+                { through: newCartItem.cartItem }
+            );
+        }
+
+        
+
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
 }
 
 

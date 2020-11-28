@@ -19,22 +19,22 @@
 
                     <div class="infoWrap">
                         <div class="cartSection">
-                            <img src="<%=cp.productData.imageUrl %>" alt="" class="itemImg" />
-                            <p class="itemNumber"><%= cp.productData.id %></p>
-                            <h3><%= cp.productData.title %></h3>
+                            <img src="<%=cp.imageUrl %>" alt="" class="itemImg" />
+                            <p class="itemNumber"><%= cp.id %></p>
+                            <h3><%= cp.title %></h3>
 
-                            <p> <input type="text" class="qty" placeholder="<%= cp.qty %>" /> x $
-                                <%= cp.productData.price %></p>
+                            <p> <input type="text" class="qty" placeholder="<%= cp['cart-item'].quantity %>" /> x $
+                                <%= cp.price %></p>
 
                             <p class="stockStatus">In Stock</p>
                         </div>
 
 
                         <div class="prodTotal cartSection">
-                            <p>$ <%= cp.productData.price * cp.qty %></p>
+                            <p>$ <%= cp.price * cp['cart-item'].quantity %></p>
                         </div>
                         <div class="cartSection removeWrap">
-                            <form action="/shop/cart-delete-item/<%= cp.productData.id %>" method="post">
+                            <form action="/shop/cart-delete-item/<%= cp.id %>" method="post">
                                 <input type="submit" class="remove" value="x">
                             </form>
 

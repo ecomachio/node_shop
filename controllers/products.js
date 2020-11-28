@@ -27,7 +27,7 @@ const getProduct = async (req, res, next) => {
 
     const prodId = req.params.productId;
 
-    const product = await Product.find(prodId);
+    const product = await Product.findByPk(prodId);
 
     res.render('shop/product-detail', {
         pageTitle: product.title,
@@ -77,10 +77,10 @@ const getAddProduct = (req, res, next) => {
 };
 
 const postAddProduct = async (req, res, next) => {
-    const { title, imageUrl, price, description, category } = req.body;
-
+    const { title, imageUrl, price, description, category } = req.body
+    
     try {
-        await Product.create({ title, imageUrl, price, description, category });
+        await req.user.createProduct({ title, imageUrl, price, description, category });
     } catch (error) {
         console.error(error);
     }
@@ -129,8 +129,6 @@ const deleteProduct = async (req, res, next) => {
     await Product.destroy({ where: { id: id } });
     res.redirect('/shop')
 };
-
-
 
 exports.postAddProduct = postAddProduct;
 exports.getAddProduct = getAddProduct;
