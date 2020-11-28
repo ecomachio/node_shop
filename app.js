@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const rootDir = require('./utils/path')
 const adminRoutes = require('./routes/admin')
 const shopRoutes = require('./routes/shop')
+const orderRoutes = require('./routes/order')
 const exceptionsController = require('./controllers/exceptions');
 
 const sequelize = require('./utils/database');
@@ -14,6 +15,8 @@ const Product = require('./models/product');
 const User = require('./models/User');
 const Cart = require('./models/cart');
 const CartItem = require('./models/cart-item');
+const Order = require('./models/order');
+const OrderItem = require('./models/order-item');
 
 const app = express();
 
@@ -32,9 +35,11 @@ app.use(async (req, res, next) => {
 
 app.use('/admin', adminRoutes)
 app.use('/shop', shopRoutes)
+app.use('/order', orderRoutes)
 
 app.use(exceptionsController.pageNotFound)
 
+// Relations
 Product.belongsTo(User);
 User.hasMany(Product)
 
@@ -44,13 +49,17 @@ Cart.hasMany(CartItem);
 Product.belongsToMany(Cart, { through: CartItem });
 Cart.belongsToMany(Product, { through: CartItem });
 
+User.hasMany(Order)
+Order.belongsTo(User)
+Order.belongsToMany(Product, { through: OrderItem })
+
 sequelize.sync(
-    //    { force: true }
+   //     { force: true }
 )
     .then(() => User.findByPk(1))
     .then(user => {
         if (!user) {
-            User.create({
+            return User.create({
                 name: 'Edian', email: 'ediancomachio@hotmail.com'
             });
         } else {

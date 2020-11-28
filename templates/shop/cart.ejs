@@ -54,13 +54,15 @@
             <ul>
                 <li class="totalRow"><span class="label">Subtotal</span><span class="value">$ <%= totalPrice %></span>
                 </li>
-
                 <li class="totalRow"><span class="label">Shipping</span><span class="value">$0.00</span></li>
-
                 <li class="totalRow"><span class="label">Tax</span><span class="value">$0.00</span></li>
                 <li class="totalRow final"><span class="label">Total</span><span class="value">$
                         <%= totalPrice %></span></li>
-                <li class="totalRow"><a href="#" class="btn continue">Checkout</a></li>
+                <li class="totalRow">
+                    <form action="/order/create-order/" method="post">
+                        <input type="submit" class="btn continue" value="Checkout">
+                    </form>
+                </li>
             </ul>
         </div>
     </div>

@@ -9,20 +9,6 @@ const getShop = (req, res, next) => {
     });
 };
 
-const getCheckout = (req, res, next) => {
-    res.render('shop/checkout', {
-        pageTitle: 'Shop do Edian',
-        path: '/checkout'
-    });
-};
-
-const getOrders = (req, res, next) => {
-    res.render('shop/orders', {
-        pageTitle: 'Shop do Edian',
-        path: '/orders'
-    });
-};
-
 const getProduct = async (req, res, next) => {
 
     const prodId = req.params.productId;
@@ -135,9 +121,9 @@ exports.getAddProduct = getAddProduct;
 exports.getAllProducts = getAllProducts;
 exports.getShop = getShop;
 
-exports.getCheckout = getCheckout;
+
 exports.getAdminProducts = getAdminProducts;
-exports.getOrders = getOrders;
+
 exports.getProduct = getProduct;
 
 exports.getEditProduct = getEditProduct;

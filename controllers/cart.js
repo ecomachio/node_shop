@@ -30,6 +30,7 @@ const postAddToCart = async (req, res, next) => {
             cart.totalPrice = cartItems.reduce((totalPrice, cv) => {
                 return totalPrice + cv.price * cv['cart-item'].quantity;
             }, 0)
+            cart.save()
             res.render('shop/cart', {
                 pageTitle: 'Shop do Edian',
                 path: '/shop/cart',
