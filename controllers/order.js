@@ -1,9 +1,17 @@
 const Order = require("../models/order");
+const CartController = require('../controllers/cart')
 
-const getCheckout = (req, res, next) => {
+const getCheckout = async (req, res, next) => {
+
+    let orders = await req.user.getOrders({ include: ['products'] });
+
+    orders = [orders[orders.length - 1]]
+
     res.render('shop/checkout', {
         pageTitle: 'Shop do Edian',
-        path: '/checkout'
+        path: '/checkout',
+        orders: orders,
+        user: req.user
     });
 };
 
@@ -30,6 +38,8 @@ const postOrder = async (req, res, next) => {
     newOrder.totalPrice = cart.totalPrice;
     await newOrder.save();
 
+    await CartController.clearCart(cart);
+
     res.render('shop/orders', {
         pageTitle: 'Shop do Edian',
         path: '/orders'
@@ -37,3 +47,4 @@ const postOrder = async (req, res, next) => {
 };
 
 exports.postOrder = postOrder;
+exports.getCheckout = getCheckout;

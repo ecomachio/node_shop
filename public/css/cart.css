@@ -365,7 +365,8 @@ input.remove:hover {
     background: #FFC233;
 }
 
-.btn:link, .btn:visited {
+.checkoutBtn, .btn:link, .btn:visited {
+    border: none;
     text-decoration: none;
     font-family: "Montserrat", sans-serif;
     letter-spacing: -.015em;

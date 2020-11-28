@@ -88,7 +88,7 @@ const addItemToCart = async (prodId, cart) => {
             );
         }
 
-        
+
 
         return true;
     } catch (error) {
@@ -97,7 +97,13 @@ const addItemToCart = async (prodId, cart) => {
     }
 }
 
+const clearCart = async (cart) => {
+    await cart.setProducts(null);
+    cart.quantity = 0;
+    await cart.save();
+}
 
 exports.getCart = getCart;
 exports.postAddToCart = postAddToCart;
 exports.postCartDeleteProduct = postCartDeleteProduct;
+exports.clearCart = clearCart;
