@@ -1,0 +1,46 @@
+main {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    background-color: #001D4A;
+}
+
+article {
+    text-align: center;
+    color: aliceblue;
+    margin-bottom: 100px;
+}
+
+article h1 {
+    font-size: 3em;
+    margin: 0;
+}
+
+.proceed {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #FFC233;
+    border: none;
+    color: white;
+    transition: box-shadow .2s, transform .4s, background-color 1000ms;
+    cursor: pointer;
+}
+
+.proceed:active {
+    outline: none;
+}
+
+.proceed:hover {
+    background: #ffeb3b;
+}
+
+.proceed:focus {
+    outline: none;
+    box-shadow: inset 0px 0px 5px white;
+}
+
+.sendicon {
+    filter: invert(100%);
+    padding-top: 2px;
+}

@@ -1,12 +1,17 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/product.css">
+<link rel="stylesheet" href="/css/index.css">
 </head>
 
 <body>
-    <%- include('../includes/navigation.ejs') %>
     <main>
-        <h1>My Shipshop</h1>
-        <p>Shipshop...</p>
-
+        <article>
+            <h1>My Shipshop</h1>
+            <p>a shop made with nodejs</p>
+            <a href="/shop/products"><button class="proceed"><svg class="sendicon" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"></path>
+                    </svg>
+                </button>
+            </a>
+        </article>
     </main>
     <%- include('../includes/end.ejs') %>

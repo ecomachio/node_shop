@@ -6,32 +6,49 @@
 <body>
     <%- include('../includes/navigation.ejs') %>
     <main>
-        <h1>My Products</h1>
-        <p>List of all the products ejs...</p>
-        <% if (products.length > 0 ) { %>
-        <div class="grid">
+        <div class="wrapper">
+            <% if (products.length > 0 ) { %>
             <% for (const prod of products) { %>
-            <article class="card product-item">
-                <header class="card__header">
-                    <h1 class="product__title"><%= prod.title %> </h1>
-                </header>
-                <a href="/shop/products/<%= prod.id %>">
-                    <div class="card__image">
-                        <img src="<%= prod.imageUrl %>" alt="A Book">
-                    </div>
-                </a>
-                <div class="card__content">
-                    <h2 class="product__price">$ <%= prod.price %></h2>
-                    <p class="product__description">Save 5% more with Subscribe & Save</p>
-                    <br>
-                    <p class="product__description">Ships to Brazil</p>
+
+            <div class="product">
+                <div class="title">
+                    <%= prod.title %>
                 </div>
-                <%- include('../includes/add-cart.ejs', {prod}) %>
-            </article>
+
+                <div class="text">
+                    <div class="code">Product <%= prod.id %></div>
+                    <div class="description">
+                        <%= prod.description %>
+                    </div>
+                    <div class="review">
+                        <span class="star-icon"></span>
+                        <span class="star-icon"></span>
+                        <span class="star-icon"></span>
+                        <span class="star-icon"></span>
+                        <span class="star-icon star-disable"></span>
+                        <span class="star-reviews">84 reviews</span>
+                    </div>
+                    <div class="price">
+                        $<%= prod.price %>
+                    </div>
+                    <div class="shop-actions">
+                        <%- include('../includes/add-cart.ejs', {prod}) %>
+                    </div>
+                </div>
+
+                <div class="preview">
+                    <svg class="svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <image class="image" xlink:href="<%= prod.imageUrl %>" x="0" y="0" width="200px"
+                            height="180px" />
+                    </svg>
+                </div>
+
+            </div>
             <% } %>
+            <% } else { %>
+            <h1> Its all over, come back tomorrow</h1>
+            <% } %>
+
         </div>
-        <% } else { %>
-        <h1> Its all over, come back tomorrow</h1>
-        <% } %>
     </main>
     <%- include('../includes/end.ejs') %>

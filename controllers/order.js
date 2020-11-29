@@ -40,10 +40,7 @@ const postOrder = async (req, res, next) => {
 
     await CartController.clearCart(cart);
 
-    res.render('shop/orders', {
-        pageTitle: 'Shop do Edian',
-        path: '/orders'
-    });
+    getCheckout(req, res, next);
 };
 
 exports.postOrder = postOrder;

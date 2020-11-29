@@ -1,6 +1,7 @@
 const Product = require('../models/product');
 const Cart = require('../models/cart');
 const CartItem = require('../models/cart-item');
+const ProductController = require('./products');
 
 const getCart = async (req, res, next) => {
 
@@ -30,13 +31,9 @@ const postAddToCart = async (req, res, next) => {
             cart.totalPrice = cartItems.reduce((totalPrice, cv) => {
                 return totalPrice + cv.price * cv['cart-item'].quantity;
             }, 0)
-            cart.save()
-            res.render('shop/cart', {
-                pageTitle: 'Shop do Edian',
-                path: '/shop/cart',
-                products: cartItems,
-                totalPrice: cart.totalPrice,
-            });
+            await cart.save()
+            //this wil render the page products
+            await ProductController.getAllProducts(req, res, next);
         } else {
             throw "kk k num deu";
         }
@@ -87,9 +84,6 @@ const addItemToCart = async (prodId, cart) => {
                 { through: newCartItem.cartItem }
             );
         }
-
-
-
         return true;
     } catch (error) {
         console.error(error);
@@ -99,7 +93,7 @@ const addItemToCart = async (prodId, cart) => {
 
 const clearCart = async (cart) => {
     await cart.setProducts(null);
-    cart.quantity = 0;
+    cart.totalPrice = 0;
     await cart.save();
 }
 
