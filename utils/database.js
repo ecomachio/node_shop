@@ -1,7 +1,6 @@
-const { Sequelize } = require('sequelize');
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://nodeshopdb:admin@cluster0.rweci.mongodb.net/<dbname>?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true });
 
-const sequelize = new Sequelize('node-complete', 'root', 'admin', {
-    dialect: 'mysql', host: 'localhost'
-});
 
-module.exports = sequelize;
+module.exports = client
