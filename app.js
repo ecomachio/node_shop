@@ -5,7 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const rootDir = require('./utils/path')
-//const adminRoutes = require('./routes/admin')
+const adminRoutes = require('./routes/admin')
 //const shopRoutes = require('./routes/shop')
 //const orderRoutes = require('./routes/order')
 const exceptionsController = require('./controllers/exceptions');
@@ -24,15 +24,15 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(async (req, res, next) => {
     // req.user = await User.findByPk(1);
     // console.log(req.user);
-    //next();
+    next();
 })
 
-//app.use('/admin', adminRoutes)
+app.use('/admin', adminRoutes)
 //app.use('/shop', shopRoutes)
 //app.use('/order', orderRoutes)
 
 app.use(exceptionsController.pageNotFound)
 
-mongoClient.connect()
-    .then(res => console.log('connected', res))
-    .catch(console.err);
+mongoClient.mongoConnect().then(() => {
+    app.listen(3000);
+});

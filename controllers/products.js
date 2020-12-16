@@ -1,5 +1,4 @@
 const Product = require('../models/product');
-const Cart = require('../models/cart');
 
 const getShop = (req, res, next) => {
 
@@ -65,8 +64,10 @@ const getAddProduct = (req, res, next) => {
 const postAddProduct = async (req, res, next) => {
     const { title, imageUrl, price, description, category } = req.body
     
+    const product = new Product(title, imageUrl, price, description, category);
+
     try {
-        await req.user.createProduct({ title, imageUrl, price, description, category });
+        await product.save();
     } catch (error) {
         console.error(error);
     }
