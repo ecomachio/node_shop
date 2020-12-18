@@ -12,7 +12,7 @@ const getProduct = async (req, res, next) => {
 
     const prodId = req.params.productId;
 
-    const product = await Product.findByPk(prodId);
+    const product = await Product.fetch(prodId);
 
     res.render('shop/product-detail', {
         pageTitle: product.title,
