@@ -23,10 +23,8 @@ const getProduct = async (req, res, next) => {
 
 const getAllProducts = async (req, res, next) => {
 
-    const {
-        rows: products,
-        count: productsCount
-    } = await Product.findAndCountAll();;
+    const products = await Product.fetchAll();
+    const productsCount = products.length;
 
     res.render('shop/product-list', {
         pageTitle: 'Shop do Edian',
@@ -39,10 +37,7 @@ const getAllProducts = async (req, res, next) => {
 
 const getAdminProducts = async (req, res, next) => {
 
-    const {
-        rows: products,
-        count: productsCount
-    } = await Product.findAndCountAll();
+    const products = await Product.fetchAll();
 
     res.render('admin/products', {
         pageTitle: 'Shop do Edian - Admin',
