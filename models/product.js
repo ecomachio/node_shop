@@ -4,24 +4,31 @@ const getDb = require('./../utils/database').getDb;
 const COLLECTION_NAME = 'products';
 
 class Product {
-    constructor(title, imageUrl, price, description, category) {
+    constructor(title, imageUrl, price, description, category, id) {
         this.title = title;
         this.price = price;
         this.description = description;
         this.imageUrl = imageUrl;
         this.category = category;
+        this._id = new mongodb.ObjectId(id);
     }
 
     save() {
         const db = getDb();
-        return db.collection(COLLECTION_NAME).insertOne(this)
-            .then(res => console.log(res))
-            .catch(res => console.log(res))
+        if (this._id) {
+            return db.collection(COLLECTION_NAME).updateOne(
+                { _id: new mongodb.ObjectId(this._id) },
+                { $set: this }
+            );
+        } else {
+            return db.collection(COLLECTION_NAME).insertOne(this);
+        }
     }
 
     static async fetch(id) {
         const db = getDb();
-        return await db.collection(COLLECTION_NAME).findOne({_id: new mongodb.ObjectId(id)})
+        console.log(id);
+        return await db.collection(COLLECTION_NAME).findOne({ _id: new mongodb.ObjectId(id) })
     }
 
     static async fetchAll() {

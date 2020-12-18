@@ -77,7 +77,9 @@ const getEditProduct = async (req, res, next) => {
     }
 
     const prodId = req.params.id;
-    let product = await Product.findByPk(prodId);
+    let product = await Product.fetch(prodId);
+
+    console.log(product);
 
     if (!product) {
         return res.redirect('/shop')
@@ -92,15 +94,9 @@ const getEditProduct = async (req, res, next) => {
 };
 
 const postEditProduct = async (req, res, next) => {
-    const { id, title, imageUrl, price, description, category } = req.body;
+    const { _id, title, imageUrl, price, description, category } = req.body;
 
-    let product = await Product.findByPk(id);
-    product.title = title;
-    product.price = price;
-    product.description = description;
-    product.imageUrl = imageUrl;
-    product.category = category
-    product.id = id;
+    const product = new Product(title, imageUrl, price, description, category, _id);
 
     await product.save();
     res.redirect('/shop')
