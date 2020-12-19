@@ -10,7 +10,7 @@ class Product {
         this.description = description;
         this.imageUrl = imageUrl;
         this.category = category;
-        this._id = new mongodb.ObjectId(id);
+        this._id = id ? mongodb.ObjectId(id) : null
     }
 
     save() {
@@ -34,6 +34,11 @@ class Product {
     static async fetchAll() {
         const db = getDb();
         return await db.collection(COLLECTION_NAME).find().toArray();
+    }
+
+    static async delete(id) {
+        const db = getDb();
+        return await db.collection(COLLECTION_NAME).deleteOne({ _id: new mongodb.ObjectId(id) })
     }
 }
 

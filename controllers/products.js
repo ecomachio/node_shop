@@ -61,6 +61,8 @@ const postAddProduct = async (req, res, next) => {
     
     const product = new Product(title, imageUrl, price, description, category);
 
+    console.log(product)
+
     try {
         await product.save();
     } catch (error) {
@@ -104,7 +106,7 @@ const postEditProduct = async (req, res, next) => {
 
 const deleteProduct = async (req, res, next) => {
     const id = req.params.id
-    await Product.destroy({ where: { id: id } });
+    await Product.delete(id);
     res.redirect('/shop')
 };
 
