@@ -7,7 +7,7 @@ class User {
     constructor(name, email, cart, id) {
         this.name = name
         this.email = email
-        this.cart = cart
+        this.cart = cart || { items: [], totalPrice: 0 }
         this._id = id ? mongodb.ObjectId(id) : null;
     }
 
@@ -17,11 +17,22 @@ class User {
     }
 
     addToCart(product) {
-        const cart = { items: [{ productId: product._id, quantity: 1 }] }
-        const db = getDb();
-        return db.collection(COLLECTION_NAME).updateOne(
+        let cartProduct = this.cart.items.find((cp) => {
+            console.log(cp.productId, product._id);
+            return cp.productId.equals(product._id)
+        })
+
+        if (cartProduct) {
+            cartProduct.quantity++
+            this.cart.totalPrice += +product.price;
+        } else {
+            this.cart.items.push({ productId: product._id, quantity: 1 });
+            this.cart.totalPrice += +product.price;
+        }
+
+        return getDb().collection(COLLECTION_NAME).updateOne(
             { _id: this._id },
-            { $set: { cart: cart } }
+            { $set: { cart: this.cart } }
         )
     }
 

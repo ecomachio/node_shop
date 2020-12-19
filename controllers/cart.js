@@ -27,7 +27,7 @@ const postAddToCart = async (req, res, next) => {
         const prod = await Product.fetch(prodId);
         const user = await req.user.addToCart(prod);
 
-        console.log(user);
+        
 
         // const prodId = req.body.productId;
         // const cart = await req.user.getCart();
