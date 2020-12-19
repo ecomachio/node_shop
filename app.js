@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const rootDir = require('./utils/path')
 const adminRoutes = require('./routes/admin')
 const shopRoutes = require('./routes/shop')
-//const orderRoutes = require('./routes/order')
+const orderRoutes = require('./routes/order')
 const exceptionsController = require('./controllers/exceptions');
 const User = require('./models/user');
 
@@ -23,14 +23,15 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(async (req, res, next) => {
-     req.user = await User.fetch("5fdd4bd3e1dd1409483cef06");
+     const u = await User.fetch("5fdd4bd3e1dd1409483cef06");
+     req.user = new User(u.name, u.email, u.cart, u._id);
      console.log(req.user);
      next();
 })
 
 app.use('/admin', adminRoutes)
 app.use('/shop', shopRoutes)
-//app.use('/order', orderRoutes)
+app.use('/order', orderRoutes)
 
 app.use(exceptionsController.pageNotFound)
 

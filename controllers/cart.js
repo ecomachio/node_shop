@@ -24,19 +24,25 @@ const postAddToCart = async (req, res, next) => {
 
     try {
         const prodId = req.body.productId;
-        const cart = await req.user.getCart();
+        const prod = await Product.fetch(prodId);
+        const user = await req.user.addToCart(prod);
 
-        if (await addItemToCart(prodId, cart)) {
-            const cartItems = await cart.getProducts();
-            cart.totalPrice = cartItems.reduce((totalPrice, cv) => {
-                return totalPrice + cv.price * cv['cart-item'].quantity;
-            }, 0)
-            await cart.save()
-            //this wil render the page products
-            await ProductController.getAllProducts(req, res, next);
-        } else {
-            throw "kk k num deu";
-        }
+        console.log(user);
+
+        // const prodId = req.body.productId;
+        // const cart = await req.user.getCart();
+
+        // if (await addItemToCart(prodId, cart)) {
+        //     const cartItems = await cart.getProducts();
+        //     cart.totalPrice = cartItems.reduce((totalPrice, cv) => {
+        //         return totalPrice + cv.price * cv['cart-item'].quantity;
+        //     }, 0)
+        //     await cart.save()
+        //     //this wil render the page products
+        //     await ProductController.getAllProducts(req, res, next);
+        // } else {
+        //     throw "kk k num deu";
+        // }
     } catch (error) {
         console.error(error);
     }
