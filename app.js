@@ -9,6 +9,7 @@ const adminRoutes = require('./routes/admin')
 const shopRoutes = require('./routes/shop')
 //const orderRoutes = require('./routes/order')
 const exceptionsController = require('./controllers/exceptions');
+const User = require('./models/user');
 
 const mongoClient = require('./utils/database');
 
@@ -22,9 +23,9 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(async (req, res, next) => {
-    // req.user = await User.findByPk(1);
-    // console.log(req.user);
-    next();
+     req.user = await User.fetch("5fdd4bd3e1dd1409483cef06");
+     console.log(req.user);
+     next();
 })
 
 app.use('/admin', adminRoutes)
