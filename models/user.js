@@ -32,7 +32,7 @@ class User {
             this.cart.totalPrice += +product.price;
         }
 
-        return 
+        return this.saveCart();
     }
 
     async deleteItemFromCart(product) {
@@ -44,10 +44,8 @@ class User {
     async getCart() {
         const prodIds = this.cart.items.map(i => i.productId)
 
-        let products = await getDb().collection(COLLECTION_PRODUCTS).find(
-            { _id: { $in: prodIds } }
-        ).toArray();
-        console.log(products);
+        let products = await this.findProducts(prodIds);
+
         products = products.map(p => {
             return {
                 ...p,
@@ -63,6 +61,32 @@ class User {
             items: [...products],
             totalPrice: this.cart.totalPrice
         };
+    }
+
+    async findProducts(prodIds) {
+        return await getDb().collection(COLLECTION_PRODUCTS).find(
+            { _id: { $in: prodIds } }
+        ).toArray();
+    }
+
+    async getOrder() {
+        const orders = await getDb().collection(COLLECTION_ORDERS)
+            .findOne({}, { sort: { _id: 1 } })
+
+        const prodIds = orders.order.items.map(i => i.productId)
+
+        let products = await this.findProducts(prodIds);
+        products = products.map(p => {
+            return {
+                ...p,
+                quantity: orders.order.items.find(item => item.productId.equals(p._id)).quantity
+            }
+        })
+        return [{
+            items: [...products],
+            totalPrice: orders.order.totalPrice
+        }];
+
     }
 
     async addOrder() {

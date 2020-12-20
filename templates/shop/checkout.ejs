@@ -29,12 +29,12 @@
             </div>
             <div class="col">
                 <p>Bought Items:</p>
-                <% order.products.forEach((p) => { %>
+                <% order.items.forEach((p) => { %>
                 
                 <h3 class="bought-items"><%= p.title %></h3>
-                <p class="bought-items price"> <%= p['order-item'].quantity %>x $<%= p.price %></p>
+                <p class="bought-items price"> <%= p.quantity %>x $<%= p.price %></p>
     
-                <p class="bought-items description">Total: $<%= p['order-item'].quantity * p.price %></p>
+                <p class="bought-items description">Total: $<%= p.quantity * p.price %></p>
                 <br>
                 <% }) %>
 

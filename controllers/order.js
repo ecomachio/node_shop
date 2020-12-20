@@ -3,9 +3,9 @@ const CartController = require('../controllers/cart')
 
 const getCheckout = async (req, res, next) => {
 
-    let orders = await req.user.getOrders({ include: ['products'] });
+    let orders =await req.user.getOrder();
 
-    orders = [orders[orders.length - 1]]
+    //orders = [orders[orders.length - 1]]
 
     res.render('shop/checkout', {
         pageTitle: 'Shop do Edian',
@@ -24,21 +24,7 @@ const getOrders = (req, res, next) => {
 
 const postOrder = async (req, res, next) => {
 
-    const cart = await req.user.getCart();
-    const products = await cart.getProducts();
-
-    const newOrder = await req.user.createOrder();
-
-    const orderProducts = products.map(prod => {
-        prod['order-item'] = { quantity: prod['cart-item'].quantity };
-        return prod;
-    })
-
-    newOrder.addProducts(orderProducts);
-    newOrder.totalPrice = cart.totalPrice;
-    await newOrder.save();
-
-    await CartController.clearCart(cart);
+    await req.user.addOrder();
 
     getCheckout(req, res, next);
 };
