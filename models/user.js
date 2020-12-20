@@ -36,10 +36,17 @@ class User {
         )
     }
 
+    async deleteItemFromCart(product) {
+        this.cart.items = this.cart.items.filter(item => !item.productId.equals(product._id))
+
+        return await getDb().collection(COLLECTION_NAME).updateOne(
+            { _id: this._id },
+            { $set: { cart: this.cart } }
+        )
+    }
+
     async getCart() {
         const prodIds = this.cart.items.map(i => i.productId)
-        
-        
 
         let products = await getDb().collection(COLLECTION_PRODUCTS).find(
             { _id: { $in: prodIds } }
@@ -52,10 +59,21 @@ class User {
             }
         })
 
+        this.cart.totalPrice = this.getTotalPrice(products);
+
+        await getDb().collection(COLLECTION_NAME).updateOne(
+            { _id: this._id },
+            { $set: { cart: this.cart } }
+        )
+
         return {
             items: [...products],
             totalPrice: this.cart.totalPrice
-        }
+        };
+    }
+
+    getTotalPrice(products) {
+        return products.reduce((pv, cv) => pv + +cv.price * +cv.quantity, 0)
     }
 
     static async fetch(id) {

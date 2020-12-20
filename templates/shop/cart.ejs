@@ -34,7 +34,7 @@
                             <p>$ <%= cp.price * cp.quantity %></p>
                         </div>
                         <div class="cartSection removeWrap">
-                            <form action="/shop/cart-delete-item/<%= cp.id %>" method="post">
+                            <form action="/shop/cart-delete-item/<%= cp._id %>" method="post">
                                 <input type="submit" class="remove" value="x">
                             </form>
 
