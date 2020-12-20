@@ -3,11 +3,13 @@ const mongodb = require('mongodb');
 
 const COLLECTION_NAME = 'users';
 const COLLECTION_PRODUCTS = 'products';
+const COLLECTION_ORDERS = 'orders';
+
 class User {
     constructor(name, email, cart, id) {
         this.name = name
         this.email = email
-        this.cart = cart || { items: [], totalPrice: 0 }
+        this.cart = cart || this.clearCart()
         this._id = id ? mongodb.ObjectId(id) : null;
     }
 
@@ -30,19 +32,13 @@ class User {
             this.cart.totalPrice += +product.price;
         }
 
-        return await getDb().collection(COLLECTION_NAME).updateOne(
-            { _id: this._id },
-            { $set: { cart: this.cart } }
-        )
+        return 
     }
 
     async deleteItemFromCart(product) {
         this.cart.items = this.cart.items.filter(item => !item.productId.equals(product._id))
 
-        return await getDb().collection(COLLECTION_NAME).updateOne(
-            { _id: this._id },
-            { $set: { cart: this.cart } }
-        )
+        return this.saveCart();
     }
 
     async getCart() {
@@ -61,15 +57,33 @@ class User {
 
         this.cart.totalPrice = this.getTotalPrice(products);
 
-        await getDb().collection(COLLECTION_NAME).updateOne(
-            { _id: this._id },
-            { $set: { cart: this.cart } }
-        )
+        this.saveCart();
 
         return {
             items: [...products],
             totalPrice: this.cart.totalPrice
         };
+    }
+
+    async addOrder() {
+        getDb().collection(COLLECTION_ORDERS).insertOne({
+            userId: this._id,
+            order: this.cart,
+        })
+
+        this.clearCart();
+        this.saveCart();
+    }
+
+    async saveCart() {
+        return await getDb().collection(COLLECTION_NAME).updateOne(
+            { _id: this._id },
+            { $set: { cart: this.cart } }
+        )
+    }
+
+    clearCart() {
+        return { items: [], totalPrice: 0 };
     }
 
     getTotalPrice(products) {
