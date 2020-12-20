@@ -5,8 +5,7 @@ const ProductController = require('./products');
 
 const getCart = async (req, res, next) => {
 
-    try {
-        console.log("asd");
+    try {        
         const cart = await req.user.getCart();
         const cartItems = cart.items;
 
