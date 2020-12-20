@@ -71,7 +71,7 @@ class User {
 
     async getOrder() {
         return await getDb().collection(COLLECTION_ORDERS)
-            .findOne({}, { sort: { _id: -1 } })
+            .findOne({ 'userId': this._id }, { sort: { _id: -1 } })
 
     }
 
