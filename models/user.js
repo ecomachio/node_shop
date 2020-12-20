@@ -2,7 +2,7 @@ const getDb = require('../utils/database').getDb;
 const mongodb = require('mongodb');
 
 const COLLECTION_NAME = 'users';
-
+const COLLECTION_PRODUCTS = 'products';
 class User {
     constructor(name, email, cart, id) {
         this.name = name
@@ -16,7 +16,7 @@ class User {
         return await db.collection(COLLECTION_NAME).insertOne(this);
     }
 
-    addToCart(product) {
+    async addToCart(product) {
         let cartProduct = this.cart.items.find((cp) => {
             console.log(cp.productId, product._id);
             return cp.productId.equals(product._id)
@@ -30,10 +30,32 @@ class User {
             this.cart.totalPrice += +product.price;
         }
 
-        return getDb().collection(COLLECTION_NAME).updateOne(
+        return await getDb().collection(COLLECTION_NAME).updateOne(
             { _id: this._id },
             { $set: { cart: this.cart } }
         )
+    }
+
+    async getCart() {
+        const prodIds = this.cart.items.map(i => i.productId)
+        
+        
+
+        let products = await getDb().collection(COLLECTION_PRODUCTS).find(
+            { _id: { $in: prodIds } }
+        ).toArray();
+        console.log(products);
+        products = products.map(p => {
+            return {
+                ...p,
+                quantity: this.cart.items.find(item => item.productId.equals(p._id)).quantity
+            }
+        })
+
+        return {
+            items: [...products],
+            totalPrice: this.cart.totalPrice
+        }
     }
 
     static async fetch(id) {

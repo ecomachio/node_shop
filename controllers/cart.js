@@ -6,8 +6,9 @@ const ProductController = require('./products');
 const getCart = async (req, res, next) => {
 
     try {
+        console.log("asd");
         const cart = await req.user.getCart();
-        const cartItems = await cart.getProducts();
+        const cartItems = cart.items;
 
         res.render('shop/cart', {
             pageTitle: 'Shop do Edian',
@@ -25,24 +26,9 @@ const postAddToCart = async (req, res, next) => {
     try {
         const prodId = req.body.productId;
         const prod = await Product.fetch(prodId);
-        const user = await req.user.addToCart(prod);
-
         
-
-        // const prodId = req.body.productId;
-        // const cart = await req.user.getCart();
-
-        // if (await addItemToCart(prodId, cart)) {
-        //     const cartItems = await cart.getProducts();
-        //     cart.totalPrice = cartItems.reduce((totalPrice, cv) => {
-        //         return totalPrice + cv.price * cv['cart-item'].quantity;
-        //     }, 0)
-        //     await cart.save()
-        //     //this wil render the page products
-        //     await ProductController.getAllProducts(req, res, next);
-        // } else {
-        //     throw "kk k num deu";
-        // }
+        await req.user.addToCart(prod);
+        await ProductController.getAllProducts(req, res, next);
     } catch (error) {
         console.error(error);
     }
@@ -55,9 +41,9 @@ const postCartDeleteProduct = async (req, res, next) => {
     try {
         const cart = await req.user.getCart();
 
-        const cartProducts = await cart.getProducts({ where: { id: prodId } });
+        const cartProducts = cart.items
 
-        await cartProducts[0]['cart-item'].destroy();
+        //await cartProducts[0]['cart-item'].destroy();
 
     } catch (error) {
         console.error(error);

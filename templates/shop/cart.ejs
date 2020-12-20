@@ -23,7 +23,7 @@
                             <p class="itemNumber"><%= cp.id %></p>
                             <h3><%= cp.title %></h3>
 
-                            <p> <input type="text" class="qty" placeholder="<%= cp['cart-item'].quantity %>" /> x $
+                            <p> <input type="text" class="qty" placeholder="<%= cp.quantity %>" /> x $
                                 <%= cp.price %></p>
 
                             <p class="stockStatus">In Stock</p>
@@ -31,7 +31,7 @@
 
 
                         <div class="prodTotal cartSection">
-                            <p>$ <%= cp.price * cp['cart-item'].quantity %></p>
+                            <p>$ <%= cp.price * cp.quantity %></p>
                         </div>
                         <div class="cartSection removeWrap">
                             <form action="/shop/cart-delete-item/<%= cp.id %>" method="post">
