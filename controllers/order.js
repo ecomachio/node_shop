@@ -3,14 +3,14 @@ const CartController = require('../controllers/cart')
 
 const getCheckout = async (req, res, next) => {
 
-    let orders =await req.user.getOrder();
+    let orders = await req.user.getOrder();
 
     //orders = [orders[orders.length - 1]]
 
     res.render('shop/checkout', {
         pageTitle: 'Shop do Edian',
         path: '/checkout',
-        orders: orders,
+        orders: [orders.order],
         user: req.user
     });
 };

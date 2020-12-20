@@ -70,32 +70,32 @@ class User {
     }
 
     async getOrder() {
-        const orders = await getDb().collection(COLLECTION_ORDERS)
-            .findOne({}, { sort: { _id: 1 } })
-
-        const prodIds = orders.order.items.map(i => i.productId)
-
-        let products = await this.findProducts(prodIds);
-        products = products.map(p => {
-            return {
-                ...p,
-                quantity: orders.order.items.find(item => item.productId.equals(p._id)).quantity
-            }
-        })
-        return [{
-            items: [...products],
-            totalPrice: orders.order.totalPrice
-        }];
+        return await getDb().collection(COLLECTION_ORDERS)
+            .findOne({}, { sort: { _id: -1 } })
 
     }
 
     async addOrder() {
-        getDb().collection(COLLECTION_ORDERS).insertOne({
-            userId: this._id,
-            order: this.cart,
+        const prodIds = this.cart.items.map(i => i.productId)
+
+        let products = await this.findProducts(prodIds);
+
+        products = products.map(p => {
+            return {
+                ...p,
+                quantity: this.cart.items.find(item => item.productId.equals(p._id)).quantity
+            }
         })
 
-        this.clearCart();
+        await getDb().collection(COLLECTION_ORDERS).insertOne({
+            userId: this._id,
+            order: {
+                items: [...products],
+                totalPrice: this.cart.totalPrice
+            },
+        })
+
+        this.cart = this.clearCart();
         this.saveCart();
     }
 
