@@ -59,9 +59,7 @@ const getAddProduct = (req, res, next) => {
 const postAddProduct = async (req, res, next) => {
     const { title, imageUrl, price, description, category } = req.body
     
-    const product = new Product(title, imageUrl, price, description, category);
-
-    console.log(product)
+    const product = new Product(title, imageUrl, price, description, category);    
 
     try {
         await product.save();
@@ -80,9 +78,7 @@ const getEditProduct = async (req, res, next) => {
 
     const prodId = req.params.id;
     let product = await Product.fetch(prodId);
-
-    console.log(product);
-
+    
     if (!product) {
         return res.redirect('/shop')
     }

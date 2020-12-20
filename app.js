@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(async (req, res, next) => {
      const u = await User.fetch("5fdd4bd3e1dd1409483cef06");
      req.user = new User(u.name, u.email, u.cart, u._id);
-     console.log(req.user);
+     
      next();
 })
 
