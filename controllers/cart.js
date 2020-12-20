@@ -38,11 +38,8 @@ const postCartDeleteProduct = async (req, res, next) => {
     const prodId = req.params.id;
 
     try {
-        const cart = await req.user.getCart();
-
-        const cartProducts = cart.items
-
-        //await cartProducts[0]['cart-item'].destroy();
+        const product = await Product.fetch(prodId);
+        await req.user.deleteItemFromCart(product);        
 
     } catch (error) {
         console.error(error);
