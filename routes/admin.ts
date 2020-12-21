@@ -1,8 +1,8 @@
-const path = require('path');
+import path from 'path';
 
-const express = require('express');
+import express from 'express';
 
-const productsController = require('../controllers/products');
+import productsController from '../controllers/products';
 
 const Router = express.Router();
 
@@ -18,4 +18,4 @@ Router.post('/edit-product', productsController.postEditProduct);
 
 Router.post('/delete-product/:id', productsController.deleteProduct);
 
-module.exports = Router;
+export default Router;

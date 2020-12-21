@@ -1,16 +1,23 @@
-const getDb = require('../utils/database').getDb;
-const mongodb = require('mongodb');
+import { getDb } from '../utils/database';
+import mongodb, { ObjectId } from 'mongodb';
+import Product from './product';
+import CartProduct from './cartProduct';
 
 const COLLECTION_NAME = 'users';
 const COLLECTION_PRODUCTS = 'products';
 const COLLECTION_ORDERS = 'orders';
 
-class User {
-    constructor(name, email, cart, id) {
+export default class User {
+    public name: string;
+    public email: string;
+    public cart: any;
+    public _id: ObjectId;
+
+    constructor(name: string, email: string, cart: any, id: ObjectId) {
         this.name = name
         this.email = email
         this.cart = cart || this.clearCart()
-        this._id = id ? mongodb.ObjectId(id) : null;
+        this._id = id;
     }
 
     static async save() {
@@ -18,38 +25,38 @@ class User {
         return await db.collection(COLLECTION_NAME).insertOne(this);
     }
 
-    async addToCart(product) {
-        let cartProduct = this.cart.items.find((cp) => {
-            console.log(cp.productId, product._id);
-            return cp.productId.equals(product._id)
+    async addToCart(product: CartProduct) {
+        const cartProduct = this.cart.items.find((cp: CartProduct) => {
+            console.log(cp._id, product._id);
+            return cp._id?.equals(product._id || "")
         })
 
         if (cartProduct) {
             cartProduct.quantity++
             this.cart.totalPrice += +product.price;
         } else {
-            this.cart.items.push({ productId: product._id, quantity: 1 });
+            this.cart.items.push({ _id: product._id, quantity: 1 });
             this.cart.totalPrice += +product.price;
         }
 
         return this.saveCart();
     }
 
-    async deleteItemFromCart(product) {
-        this.cart.items = this.cart.items.filter(item => !item.productId.equals(product._id))
+    async deleteItemFromCart(product: CartProduct) {
+        this.cart.items = this.cart.items.filter((item: CartProduct) => !item._id?.equals(product._id || ""))
 
         return this.saveCart();
     }
 
     async getCart() {
-        const prodIds = this.cart.items.map(i => i.productId)
+        const prodIds = this.cart.items.map((i: CartProduct) => i._id)
 
         let products = await this.findProducts(prodIds);
 
         products = products.map(p => {
             return {
                 ...p,
-                quantity: this.cart.items.find(item => item.productId.equals(p._id)).quantity
+                quantity: this.cart.items.find((item: CartProduct) => item._id?.equals(p._id)).quantity
             }
         })
 
@@ -63,7 +70,7 @@ class User {
         };
     }
 
-    async findProducts(prodIds) {
+    async findProducts(prodIds: ObjectId[]) {
         return await getDb().collection(COLLECTION_PRODUCTS).find(
             { _id: { $in: prodIds } }
         ).toArray();
@@ -76,14 +83,14 @@ class User {
     }
 
     async addOrder() {
-        const prodIds = this.cart.items.map(i => i.productId)
+        const prodIds = this.cart.items.map((i: CartProduct) => i._id)
 
         let products = await this.findProducts(prodIds);
 
         products = products.map(p => {
             return {
                 ...p,
-                quantity: this.cart.items.find(item => item.productId.equals(p._id)).quantity
+                quantity: this.cart.items.find((item: CartProduct) => item?._id?.equals(p._id)).quantity
             }
         })
 
@@ -107,18 +114,16 @@ class User {
     }
 
     clearCart() {
-        return { items: [], totalPrice: 0 };
+        return { items: [] as CartProduct[], totalPrice: 0 };
     }
 
-    getTotalPrice(products) {
+    getTotalPrice(products: CartProduct[]) {
         return products.reduce((pv, cv) => pv + +cv.price * +cv.quantity, 0)
     }
 
-    static async fetch(id) {
+    static async fetch(id: any) {
         const db = getDb();
         return await db.collection(COLLECTION_NAME).findOne({ _id: new mongodb.ObjectId(id) });
     }
 
 }
-
-module.exports = User

@@ -1,22 +1,19 @@
-const MongoClient = require('mongodb').MongoClient;
+import { Db, MongoClient } from 'mongodb';
 const uri = "mongodb+srv://nodeshopdb:admin@cluster0.rweci.mongodb.net/nodeshopdb?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true });
 
-let _db;
+let _db: Db;
 
-const mongoConnect = () => {
+export const mongoConnect = () => {
     return client.connect()
         .then(res => _db = res.db())
-        .catch(console.err);
+        .catch(console.log);
 }
 
-const getDb = () => {
+export const getDb = () => {
     if (_db) {
         return _db;
     }
 
-    throw 'Database not connected';
+    throw new Error('Database not connected');
 }
-
-exports.mongoConnect = mongoConnect;
-exports.getDb = getDb;

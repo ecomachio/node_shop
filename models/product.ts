@@ -1,16 +1,23 @@
-const mongodb = require('mongodb');
-const getDb = require('./../utils/database').getDb;
+import mongodb, { ObjectId } from 'mongodb';
+import { getDb as getDb } from './../utils/database';
 
 const COLLECTION_NAME = 'products';
 
-class Product {
-    constructor(title, imageUrl, price, description, category, id) {
+export default class Product {
+    public title: string;
+    public price: number;
+    public description: string;
+    public imageUrl: string;
+    public category: string;
+    public _id: ObjectId | undefined;
+
+    constructor(title: string, imageUrl: string, price: number, description: string, category: string, id?: ObjectId) {
         this.title = title;
         this.price = price;
         this.description = description;
         this.imageUrl = imageUrl;
         this.category = category;
-        this._id = id ? mongodb.ObjectId(id) : null
+        this._id = id;
     }
 
     save() {
@@ -25,7 +32,7 @@ class Product {
         }
     }
 
-    static async fetch(id) {
+    static async fetch(id: ObjectId) {
         const db = getDb();
         console.log(id);
         return await db.collection(COLLECTION_NAME).findOne({ _id: new mongodb.ObjectId(id) })
@@ -36,10 +43,8 @@ class Product {
         return await db.collection(COLLECTION_NAME).find().toArray();
     }
 
-    static async delete(id) {
+    static async delete(id: ObjectId) {
         const db = getDb();
         return await db.collection(COLLECTION_NAME).deleteOne({ _id: new mongodb.ObjectId(id) })
     }
 }
-
-module.exports = Product
