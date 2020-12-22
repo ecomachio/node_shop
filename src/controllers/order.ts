@@ -5,6 +5,7 @@ export default class OrderController {
     static getCheckout = async (req: Request, res: Response, next: NextFunction) => {
 
         const orders = await req.user.getOrder();
+        console.log(orders);
 
         // orders = [orders[orders.length - 1]]
 

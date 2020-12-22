@@ -86,14 +86,14 @@ export default class User {
     }
 
     async addOrder() {
-        const prodIds = this.cart.items.map((i: CartProduct) => i.id)
+        const prodIds = this.cart.items.map((i: any) => i._id)
 
         let products = await this.findProducts(prodIds);
 
         products = products.map(p => {
             return {
                 ...p,
-                quantity: this.cart.items.find((item: CartProduct) => item?.id?.equals(p.id)).quantity
+                quantity: this.cart.items.find((item: any) => item?._id?.equals(p._id)).quantity
             }
         })
 
