@@ -9,7 +9,7 @@ export default class Product {
     public description: string;
     public imageUrl: string;
     public category: string;
-    public _id: ObjectId | undefined;
+    public id: ObjectId | undefined;
 
     constructor(title: string, imageUrl: string, price: number, description: string, category: string, id?: ObjectId) {
         this.title = title;
@@ -17,14 +17,14 @@ export default class Product {
         this.description = description;
         this.imageUrl = imageUrl;
         this.category = category;
-        this._id = id;
+        this.id = id;
     }
 
-    save() {
+    save = () => {
         const db = getDb();
-        if (this._id) {
+        if (this.id) {
             return db.collection(COLLECTION_NAME).updateOne(
-                { _id: new mongodb.ObjectId(this._id) },
+                { _id: this.id },
                 { $set: this }
             );
         } else {
@@ -35,7 +35,10 @@ export default class Product {
     static async fetch(id: ObjectId) {
         const db = getDb();
         console.log(id);
-        return await db.collection(COLLECTION_NAME).findOne({ _id: new mongodb.ObjectId(id) })
+        const res = await db.collection(COLLECTION_NAME).findOne({ _id: new mongodb.ObjectId(id) }) as any;
+
+        return new Product(res.title, res.imageUrl, res.price, res.description, res.category, res._id);
+
     }
 
     static async fetchAll() {

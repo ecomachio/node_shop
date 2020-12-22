@@ -26,16 +26,18 @@ export default class User {
     }
 
     async addToCart(product: CartProduct) {
-        const cartProduct = this.cart.items.find((cp: CartProduct) => {
-            console.log(cp._id, product._id);
-            return cp._id?.equals(product._id || "")
+        const cartProduct = this.cart.items.find((cp: any) => {
+            console.log(cp._id, product.id);
+            return cp._id.equals(product.id || "")
         })
 
         if (cartProduct) {
             cartProduct.quantity++
             this.cart.totalPrice += +product.price;
         } else {
-            this.cart.items.push({ _id: product._id, quantity: 1 });
+            console.log(product);
+
+            this.cart.items.push({ _id: product.id, quantity: 1 });
             this.cart.totalPrice += +product.price;
         }
 
@@ -43,20 +45,21 @@ export default class User {
     }
 
     async deleteItemFromCart(product: CartProduct) {
-        this.cart.items = this.cart.items.filter((item: CartProduct) => !item._id?.equals(product._id || ""))
+        this.cart.items = this.cart.items.filter((item: CartProduct) => !item.id?.equals(product.id || ""))
 
         return this.saveCart();
     }
 
     async getCart() {
-        const prodIds = this.cart.items.map((i: CartProduct) => i._id)
+        const prodIds = this.cart.items.map((i: any) => i._id)
+        console.log(prodIds);
 
         let products = await this.findProducts(prodIds);
 
         products = products.map(p => {
             return {
                 ...p,
-                quantity: this.cart.items.find((item: CartProduct) => item._id?.equals(p._id)).quantity
+                quantity: this.cart.items.find((item: any) => item._id.equals(p._id)).quantity
             }
         })
 
@@ -83,14 +86,14 @@ export default class User {
     }
 
     async addOrder() {
-        const prodIds = this.cart.items.map((i: CartProduct) => i._id)
+        const prodIds = this.cart.items.map((i: CartProduct) => i.id)
 
         let products = await this.findProducts(prodIds);
 
         products = products.map(p => {
             return {
                 ...p,
-                quantity: this.cart.items.find((item: CartProduct) => item?._id?.equals(p._id)).quantity
+                quantity: this.cart.items.find((item: CartProduct) => item?.id?.equals(p.id)).quantity
             }
         })
 

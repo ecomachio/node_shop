@@ -2,6 +2,7 @@ import Product from '../models/product';
 import ProductController from './products';
 import { Request, Response, NextFunction } from "express";
 import { ObjectId } from 'mongodb';
+import CartProduct from '../models/cartProduct';
 
 export default class CartController {
 
@@ -26,7 +27,10 @@ export default class CartController {
 
         try {
             const prodId = req.body.productId;
-            const prod = await Product.fetch(prodId);
+            const prod:CartProduct = {
+                ...await Product.fetch(prodId),
+                quantity: 0
+            }
 
             await req.user.addToCart(prod);
             await ProductController.getAllProducts(req, res, next);
@@ -40,8 +44,12 @@ export default class CartController {
         const prodId = new ObjectId(req.params.id);
 
         try {
-            const product = await Product.fetch(prodId);
-            await req.user.deleteItemFromCart(product);
+            const prod:CartProduct = {
+                ...await Product.fetch(prodId),
+                quantity: 0
+            }
+
+            await req.user.deleteItemFromCart(prod);
 
         } catch (error) {
             console.error(error);
