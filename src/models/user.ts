@@ -27,7 +27,6 @@ export default class User {
 
     async addToCart(product: CartProduct) {
         const cartProduct = this.cart.items.find((cp: any) => {
-            console.log(cp._id, product.id);
             return cp._id.equals(product.id || "")
         })
 
@@ -35,8 +34,6 @@ export default class User {
             cartProduct.quantity++
             this.cart.totalPrice += +product.price;
         } else {
-            console.log(product);
-
             this.cart.items.push({ _id: product.id, quantity: 1 });
             this.cart.totalPrice += +product.price;
         }
@@ -52,8 +49,6 @@ export default class User {
 
     async getCart() {
         const prodIds = this.cart.items.map((i: any) => i._id)
-        console.log(prodIds);
-
         let products = await this.findProducts(prodIds);
 
         products = products.map(p => {

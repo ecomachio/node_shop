@@ -34,7 +34,6 @@ export default class Product {
 
     static async fetch(id: ObjectId) {
         const db = getDb();
-        console.log(id);
         const res = await db.collection(COLLECTION_NAME).findOne({ _id: new mongodb.ObjectId(id) }) as any;
 
         return new Product(res.title, res.imageUrl, res.price, res.description, res.category, res._id);

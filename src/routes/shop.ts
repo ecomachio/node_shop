@@ -21,7 +21,6 @@ Router.post('/cart', cartController.postAddToCart)
 Router.post('/cart-delete-item/:id', cartController.postCartDeleteProduct)
 
 Router.use((req, res, next) => {
-    console.log("im in the third middleware");
     res.send('<h1>Hello from express</h1>')
 });
 
