@@ -1,13 +1,21 @@
 import { Db, MongoClient } from 'mongodb';
-const uri = "mongodb+srv://nodeshopdb:admin@cluster0.rweci.mongodb.net/nodeshopdb?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true });
-
 let _db: Db;
+let _client: MongoClient;
 
-export const mongoConnect = () => {
-    return client.connect()
+export const buildClient = (uri: string) => {
+    _client = new MongoClient(uri, { useNewUrlParser: true });
+    return null;
+}
+
+export const mongoConnect = (uri: string) => {
+    buildClient(uri);
+    return _client.connect()
         .then(res => _db = res.db())
         .catch(console.log);
+}
+
+export const mongoDisconnect = () => {
+    return _client.close();
 }
 
 export const getDb = () => {

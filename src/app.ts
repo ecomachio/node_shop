@@ -35,6 +35,6 @@ app.use('/order', orderRoutes)
 
 app.use(pageNotFound)
 
-mongoConnect().then(() => {
+mongoConnect("mongodb+srv://nodeshopdb:admin@cluster0.rweci.mongodb.net/nodeshopdb?retryWrites=true&w=majority").then(() => {
     app.listen(3000);
 });
