@@ -58,10 +58,8 @@ describe('Order tests', function () {
     it('should create a new order', async function () {
         const u = (await getDb().collection('users').find({}).toArray())[0];
         const user = new User(u.name, u.email, u.cart, u._id);
-        console.log("cart", user.cart)
-        const result = await user.addOrder();
 
-        console.log(result.ops);
+        const result = await user.addOrder();
 
         expect(result.result.ok).to.equal(1);
         result.ops.should.all.have.property('_id');
