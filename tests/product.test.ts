@@ -49,7 +49,7 @@ describe('Product tests',
             const result = await Product.fetchAll();
             result.should.all.have.property('_id');
         });
-
+        // tslint:disable-next-line: only-arrow-functions
         it('should fetch all products with the right properties', async function () {
             const result = await Product.fetchAll();
             result.should.include.something.that.have.property('title', 'teste')
@@ -70,7 +70,7 @@ describe('Product tests',
             result.should.include.something.that.have.property('imageUrl', 'https://radio93fm.com.br/wp-content/uploads/2019/02/produto.png')
             result.should.include.something.that.have.property('category', 'test cat3')
         });
-
+        // tslint:disable-next-line: only-arrow-functions
         it('should add a new Product', async function () {
 
             const productName = 'teste new';
@@ -87,7 +87,7 @@ describe('Product tests',
                 productCategory
             );
 
-            let res = (await product.save()) as InsertOneWriteOpResult<any>;
+            const res = (await product.save()) as InsertOneWriteOpResult<any>;
             expect(res.result.ok).to.equal(1);
             res.ops.should.include.something.that.have.property('title', productName)
             res.ops.should.include.something.that.have.property('price', productPrice)
@@ -95,7 +95,7 @@ describe('Product tests',
             res.ops.should.include.something.that.have.property('imageUrl', productImage)
             res.ops.should.include.something.that.have.property('category', productCategory)
         });
-
+        // tslint:disable-next-line: only-arrow-functions
         it('should update a Product', async function () {
 
             const products = await Product.fetchAll() as any;
