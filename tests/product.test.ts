@@ -102,12 +102,12 @@ describe('Product tests',
 
             products[0].price = 250;
 
-            let res = (await new Product(products[0].title,
+            const res = (await new Product(products[0].title,
                 products[0].imageUrl,
                 products[0].price,
                 products[0].description,
                 products[0].category,
-                products[0]['_id']
+                products[0]._id
             ).save()) as UpdateWriteOpResult;
 
             expect(res.result.ok).to.equal(1);
