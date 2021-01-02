@@ -40,7 +40,7 @@ export default class Product {
 
     }
 
-    static async fetchAll() {
+    static async fetchAll(): Promise<Product[]>{
         const db = getDb();
         return await db.collection(COLLECTION_NAME).find().toArray();
     }

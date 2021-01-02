@@ -4,6 +4,7 @@ import 'mocha';
 import { getDb, mongoConnect, mongoDisconnect } from '../src/utils/database';
 import * as chai from 'chai';
 import chaiThings from 'chai-things';
+import { InsertOneWriteOpResult, UpdateWriteOpResult } from 'mongodb';
 
 chai.should();
 chai.use(chaiThings);
@@ -69,7 +70,45 @@ describe('Product tests',
             result.should.include.something.that.have.property('imageUrl', 'https://radio93fm.com.br/wp-content/uploads/2019/02/produto.png')
             result.should.include.something.that.have.property('category', 'test cat3')
         });
-        
+
+        it('should add a new Product', async function () {
+
+            const product = new Product(
+                'teste new',
+                'https://radio93fm.com.br/wp-content/uploads/2019/02/produto.png',
+                300,
+                'test3',
+                'test cat3'
+            );
+
+            let res = (await product.save()) as InsertOneWriteOpResult<any>;
+            expect(res.result.ok).to.equal(1);
+            res.ops.should.include.something.that.have.property('title', 'teste new')
+            res.ops.should.include.something.that.have.property('price', 300)
+            res.ops.should.include.something.that.have.property('description', 'test3')
+            res.ops.should.include.something.that.have.property('imageUrl', 'https://radio93fm.com.br/wp-content/uploads/2019/02/produto.png')
+            res.ops.should.include.something.that.have.property('category', 'test cat3')
+        });
+
+        it('should update a Product', async function () {
+
+            const products = await Product.fetchAll() as any;
+
+            products[0].price = 250;
+
+            let res = (await new Product(products[0].title,
+                products[0].imageUrl,
+                products[0].price,
+                products[0].description,
+                products[0].category,
+                products[0]['_id']
+            ).save()) as UpdateWriteOpResult;
+
+            expect(res.result.ok).to.equal(1);
+            expect(res.matchedCount).to.equal(1);
+            expect(res.modifiedCount).to.equal(1)
+        });
+
         // tslint:disable-next-line: only-arrow-functions
         after(function (done) {
             getDb().collection('products').deleteMany({}).then(() => {
