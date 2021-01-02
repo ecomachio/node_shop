@@ -73,21 +73,27 @@ describe('Product tests',
 
         it('should add a new Product', async function () {
 
+            const productName = 'teste new';
+            const productImage = 'https://radio93fm.com.br/wp-content/uploads/2019/02/produto.png';
+            const productPrice = 300;
+            const productDescription = 'test3';
+            const productCategory = 'test cat3';
+
             const product = new Product(
-                'teste new',
-                'https://radio93fm.com.br/wp-content/uploads/2019/02/produto.png',
-                300,
-                'test3',
-                'test cat3'
+                productName,
+                productImage,
+                productPrice,
+                productDescription,
+                productCategory
             );
 
             let res = (await product.save()) as InsertOneWriteOpResult<any>;
             expect(res.result.ok).to.equal(1);
-            res.ops.should.include.something.that.have.property('title', 'teste new')
-            res.ops.should.include.something.that.have.property('price', 300)
-            res.ops.should.include.something.that.have.property('description', 'test3')
-            res.ops.should.include.something.that.have.property('imageUrl', 'https://radio93fm.com.br/wp-content/uploads/2019/02/produto.png')
-            res.ops.should.include.something.that.have.property('category', 'test cat3')
+            res.ops.should.include.something.that.have.property('title', productName)
+            res.ops.should.include.something.that.have.property('price', productPrice)
+            res.ops.should.include.something.that.have.property('description', productDescription)
+            res.ops.should.include.something.that.have.property('imageUrl', productImage)
+            res.ops.should.include.something.that.have.property('category', productCategory)
         });
 
         it('should update a Product', async function () {
