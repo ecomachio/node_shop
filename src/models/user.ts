@@ -92,7 +92,7 @@ export default class User {
             }
         })
 
-        await getDb().collection(COLLECTION_ORDERS).insertOne({
+        const res = await getDb().collection(COLLECTION_ORDERS).insertOne({
             userId: this._id,
             order: {
                 items: [...products],
@@ -102,6 +102,8 @@ export default class User {
 
         this.cart = this.clearCart();
         this.saveCart();
+
+        return res;
     }
 
     async saveCart() {

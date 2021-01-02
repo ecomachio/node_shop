@@ -34,13 +34,13 @@ export default class Product {
 
     static async fetch(id: ObjectId) {
         const db = getDb();
-        const res = await db.collection(COLLECTION_NAME).findOne({ _id: new mongodb.ObjectId(id) }) as any;
+        const res = await db.collection(COLLECTION_NAME).findOne({ _id: id }) as any;
 
         return new Product(res.title, res.imageUrl, res.price, res.description, res.category, res._id);
 
     }
 
-    static async fetchAll(): Promise<Product[]>{
+    static async fetchAll(): Promise<Product[]> {
         const db = getDb();
         return await db.collection(COLLECTION_NAME).find().toArray();
     }

@@ -26,7 +26,7 @@ export default class CartController {
     static postAddToCart = async (req: Request, res: Response, next: NextFunction) => {
 
         try {
-            const prodId = req.body.productId;
+            const prodId = new ObjectId(req.body.productId);
             const prod:CartProduct = {
                 ...await Product.fetch(prodId),
                 quantity: 0
