@@ -12,7 +12,8 @@
     "dev:start": "npm-run-all build start",
     "dev": "nodemon --watch src -e ts,ejs --exec npm run dev:start",
     "start": "node .",
-    "test": "mocha --timeout 10000 -r ts-node/register tests/**/*.test.ts"
+    "test": "mocha --timeout 10000 -r ts-node/register tests/**/*.test.ts",
+    "coverage": "nyc npm run test"
   },
   "author": "Edian Comachio",
   "license": "ISC",
