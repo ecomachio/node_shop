@@ -71,6 +71,19 @@ describe('Product tests',
             result.should.include.something.that.have.property('category', 'test cat3')
         });
         // tslint:disable-next-line: only-arrow-functions
+        it('should fetch one product with the right properties', async function () {
+            const products = await Product.fetchAll() as any;
+
+            const result = await Product.fetch(products[0]._id);
+
+            result.should.have.property('id');
+            result.should.have.property('title', 'teste')
+            result.should.have.property('price', 300)
+            result.should.have.property('description', 'test1')
+            result.should.have.property('imageUrl', 'https://radio93fm.com.br/wp-content/uploads/2019/02/produto.png')
+            result.should.have.property('category', 'test cat1')
+        });
+        // tslint:disable-next-line: only-arrow-functions
         it('should add a new Product', async function () {
 
             const productName = 'teste new';
