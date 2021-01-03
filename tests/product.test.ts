@@ -127,6 +127,15 @@ describe('Product tests',
             expect(res.matchedCount).to.equal(1);
             expect(res.modifiedCount).to.equal(1)
         });
+        // tslint:disable-next-line: only-arrow-functions
+        it('should delete a product', async function () {
+            const products = await Product.fetchAll() as any;
+
+            const result = await Product.delete(products[0]._id);
+
+            expect(result.result.ok).to.equal(1);
+            expect(result.result.n).to.equal(1);
+        });
 
         // tslint:disable-next-line: only-arrow-functions
         after(function (done) {
